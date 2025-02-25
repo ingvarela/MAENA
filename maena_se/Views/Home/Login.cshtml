@@ -1,0 +1,129 @@
+﻿@model maena_se.Models.LoginViewModel
+@{
+    ViewBag.Title = "Login";
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+<style>
+
+    /* Solid background */
+    body {
+        background: rgb(35, 163, 216);
+        background-attachment: fixed;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+    }
+
+    /* Responsive card */
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+    }
+
+    /* Increased spacing between logo and inputs */
+    .logo-container {
+        margin-bottom: 30px; /* Increased spacing */
+    }
+
+    /* Button styling */
+    .btn-custom {
+        background-color: rgb(230, 26, 135) !important;
+        color: white !important;
+        font-size: 18px;
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+        .btn-custom:hover {
+            background-color: rgb(230, 26, 135) !important;
+        }
+
+    /* Input field customization */
+    .input-field input {
+        border-bottom: 2px solid rgb(230, 26, 135) !important;
+        font-size: 16px;
+    }
+
+        .input-field input:focus {
+            border-bottom: 2px solid rgb(230, 26, 135) !important;
+        }
+
+    /* Responsive container */
+    .login-container {
+        max-width: 450px; /* Keeps it centered on larger screens */
+        width: 80%;
+    }
+
+    /* Link styling */
+    .link-custom {
+        color: rgb(249, 131, 34);
+        font-weight: bold;
+        text-decoration: underline;
+    }
+
+        .link-custom:hover {
+            color: rgb(230, 26, 135);
+        }
+</style>
+<div class="container login-container">
+    <div class="row">
+        <div class="col s12">
+            <div class="card">
+                <div class="card-content center-align">
+                    <div class="logo-container">
+                        <img src="~/Content/img/logo-maena.svg" alt="Login Image" class="responsive-img" style="max-width: 180px;">
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col s12">
+                            <span class="card-title">Iniciar Sesión</span>
+                            @if (ViewBag.Error != null)
+                            {
+                                <div class="red-text">@ViewBag.Error</div>
+                            }
+                            @using (Html.BeginForm("Login", "Home", FormMethod.Post, new { @class = "col s12" }))
+                            {
+                                @Html.AntiForgeryToken()
+
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        @Html.LabelFor(m => m.Username)
+                                        @Html.TextBoxFor(m => m.Username, new { @class = "validate", required = "required", placeholder = "" })
+                                        @Html.ValidationMessageFor(m => m.Username, "", new { @class = "red-text" })
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        @Html.LabelFor(m => m.Password)
+                                        @Html.PasswordFor(m => m.Password, new { @class = "validate", required = "required", autocomplete = "off", placeholder = "" })
+                                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "red-text" })
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <button type="submit" class="btn btn-custom waves-effect waves-light col s12">Ingresar</button>
+                                </div>
+
+                                <div class="row center-align">
+                                    <a href="@Url.Action("Register", "Home")" class="link-custom">Crear una Cuenta</a> |
+                                    
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', function () {
+        M.AutoInit();
+    });</script>

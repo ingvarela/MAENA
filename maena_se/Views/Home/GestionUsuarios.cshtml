@@ -1,0 +1,135 @@
+﻿@{
+    ViewBag.Title = "Gestión de Usuarios";
+}
+
+<!-- Materialize CSS & DataTables -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+<link href="//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css" rel="stylesheet">
+<style>
+
+    body {
+        background: rgb(240, 240, 240);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .container {
+        width: 95%;
+        max-width: 2400px; /* Larger than DataTable */
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-custom {
+        background-color: rgb(230, 26, 135) !important;
+        color: white !important;
+    }
+
+        .btn-custom:hover {
+            background-color: rgb(249, 131, 34) !important;
+        }
+
+    .modal {
+        max-width: 600px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .input-field input {
+        text-align: left;
+    }
+
+    .table-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .dataTables_wrapper {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        display: flex;
+        justify-content: center;
+    }
+
+    #usuariosTable {
+        width: 100%;
+        max-width: 2100px;
+        text-align: center;
+    }
+
+    th, td {
+        padding: 15px !important;
+        text-align: center !important;
+        white-space: nowrap;
+    }
+
+    .action-btns {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+</style>
+
+<div class="container">
+    <h4 class="center-align">Consulta Usuarios del Sistema</h4>
+
+    <div class="row">
+        <div class="table-responsive animate-panel" style="padding:1%;">
+            <table class="striped highlight responsive-table col-lg-12" id="usuariosTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre de Usuario</th>
+                        <th>Correo Electrónico</th>
+                        <th>Contraseña</th>
+                        <th>Fecha de Registro</th>
+                        <th>Rol</th>
+
+                    </tr>
+                </thead>
+            </table>
+            </div>
+        </div>
+        </div>
+
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="//cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
+
+        <script>
+            var usuariosTable;
+
+            $.getScript("https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js", function () {
+                console.log("✅ DataTables manually loaded via getScript().");
+
+                // Initialize DataTable AFTER DataTables is fully loaded
+                $('#usuariosTable').DataTable({
+                    "ajax": { "url": "/Home/GetUsuarios", "type": "GET", "dataSrc": "data" },
+                    "columns": [
+                        { "data": "id_usuario" },
+                        { "data": "username" },
+                        { "data": "correo_e" },
+                        { "data": "contrasena" },
+                        { "data": "fecha_registro" },
+                        { "data": "rol" }
+                    ],
+                    "columnDefs": [
+                        { "width": "150px", "targets": "_all" } // Ensures all columns have spacing
+                    ]
+                });
+            });
+        </script>

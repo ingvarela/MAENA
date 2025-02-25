@@ -1,0 +1,192 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+}
+
+<!-- Materialize CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+<style>
+    /* Full-page background */
+    body {
+        background: rgb(240, 240, 240);
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Dashboard container */
+    .dashboard-container {
+        padding: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Dashboard title */
+    .dashboard-title {
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    /* Card grid */
+    .card-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        justify-items: center;
+    }
+
+    /* Card styling */
+    .module-card {
+        width: 100%;
+        max-width: 300px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .module-card:hover {
+            transform: scale(1.05);
+        }
+
+    .card-content {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    /* Button styling */
+    .module-btn {
+        background-color: rgb(35, 163, 216) !important;
+        color: white !important;
+        padding: 10px;
+        border-radius: 8px;
+        text-transform: uppercase;
+        font-weight: bold;
+        display: block;
+        width: 100%;
+    }
+
+        .module-btn:hover {
+            background-color: rgb(249, 131, 34) !important;
+        }
+</style>
+
+<!-- Navbar -->
+<nav>
+    <div class="nav-wrapper blue">
+        <a href="#" class="brand-logo center">MAENA CENTRO INTEGRAL</a>
+        <ul id="nav-mobile" class="right">
+            <li><a href="@Url.Action("Logout", "Home")">Cerrar Sesión</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Dashboard Content -->
+<div class="dashboard-container">
+    <h4 class="dashboard-title">Bienvenido, @Session["UserName"]</h4>
+
+    <div class="card-content">
+        <div class="logo-container" style="display: flex; justify-content: center; align-items: center;">
+            <img src="~/Content/img/logo-maena.svg" alt="Create Account" class="responsive-img" style="max-width: 180px;">
+        </div>
+        </div>
+
+        <br>
+        <br>
+
+
+        <div class="card-container">
+            <!-- Module 1 -->
+            <div class="card module-card">
+                <div class="card-content">
+                    <span class="card-title">Gestión de Citas</span>
+                    <p>Administra citas de pacientes de manera eficiente.</p>
+                </div>
+                <div class="card-action center-align">
+                    <a href="@Url.Action("Index", "Home")" class="btn module-btn waves-effect waves-light">Ir</a>
+                </div>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="card module-card">
+                <div class="card-content">
+                    <span class="card-title">Usuarios</span>
+                    <p>Administra los usuarios del sistema.</p>
+                </div>
+                <div class="card-action center-align">
+                    <a href="@Url.Action("GestionUsuarios", "Home")" class="btn module-btn waves-effect waves-light">Ir</a>
+                </div>
+            </div>
+
+            <!-- Module 3 -->
+            <div class="card module-card">
+                <div class="card-content">
+                    <span class="card-title">Pacientes</span>
+                    <p>Gestión de Pacientes</p>
+                </div>
+                <div class="card-action center-align">
+                    <a href="@Url.Action("GestionPacientes", "Home")" class="btn module-btn waves-effect waves-light">Ir</a>
+                </div>
+            </div>
+
+            <!-- Module 4 -->
+            <div class="card module-card">
+                <div class="card-content">
+                    <span class="card-title">Terapeutas</span>
+                    <p>Gestiona los Terapeutas</p>
+                </div>
+                <div class="card-action center-align">
+                    <a href="" class="btn module-btn waves-effect waves-light" disabled>Ir</a>
+                </div>
+            </div>
+
+
+            <!-- Module 6 -->
+            <div class="card module-card">
+                <div class="card-content">
+                    <span class="card-title">Consultorios</span>
+                    <p>Administrar y Agregar Espacios</p>
+                </div>
+                <div class="card-action center-align">
+                    <a href="" class="btn module-btn waves-effect waves-light" disabled>Ir</a>
+                </div>
+            </div>
+
+
+
+            <!-- Module 7 -->
+            <div class="card module-card">
+                <div class="card-content">
+                    <span class="card-title">Reportes</span>
+                    <p>Visualiza reportes y estadísticas del sistema.</p>
+                </div>
+                <div class="card-action center-align">
+                    <a href="" class="btn module-btn waves-effect waves-light" disabled>Ir</a>
+                </div>
+            </div>
+
+            <!-- Module 8 -->
+            <div class="card module-card">
+                <div class="card-content">
+                    <span class="card-title">Configuración</span>
+                    <p>Modifica configuraciones generales del sistema.</p>
+                </div>
+                <div class="card-action center-align">
+                    <a href="" class="btn module-btn waves-effect waves-light" disabled>Ir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            M.AutoInit();
+        });
+    </script>

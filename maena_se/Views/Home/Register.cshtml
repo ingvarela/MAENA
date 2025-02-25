@@ -1,0 +1,169 @@
+﻿@model maena_se.Models.RegisterViewModel
+@{
+    ViewBag.Title = "RegistroUsuario";
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+<style>
+
+    body {
+        background: rgb(35, 163, 216);
+        background-attachment: fixed;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 450px;
+        width: 100%;
+    }
+
+    .card-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .logo-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .card-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .row {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .input-field {
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+        .input-field label {
+            text-align: left;
+            width: 100%;
+            display: block;
+        }
+
+        .input-field input,
+        .input-field select {
+            width: 100%;
+            text-align: left;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+    .btn-custom {
+        background-color: rgb(230, 26, 135) !important;
+        color: white !important;
+        font-size: 18px;
+        padding: 12px;
+        border-radius: 8px;
+        width: 100%;
+    }
+
+        .btn-custom:hover {
+            background-color: rgb(249, 131, 34) !important;
+        }
+</style>
+<div class="container login-container">
+    <div class="card">
+        <div class="card-content">
+
+            <div class="logo-container">
+                <img src="~/Content/img/logo-maena.svg" alt="Create Account" class="responsive-img" style="max-width: 180px;">
+            </div>
+
+
+            <span class="card-title">Registro de Usuario</span>
+            @if (ViewBag.Error != null)
+            {
+                <div class="red-text">@ViewBag.Error</div>
+            }
+            @using (Html.BeginForm("Register", "Home", FormMethod.Post, new { @class = "col s12" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+                    <div class="input-field">
+                        @Html.LabelFor(m => m.Username)
+                        @Html.TextBoxFor(m => m.Username, new { @class = "validate", required = "required" })
+                        @Html.ValidationMessageFor(m => m.Username, "", new { @class = "red-text" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field">
+                        @Html.LabelFor(m => m.Email)
+                        @Html.TextBoxFor(m => m.Email, new { @class = "validate", required = "required", type = "email" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "red-text" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field">
+                        @Html.DropDownListFor(m => m.Role, new SelectList(new[] { "Terapeuta", "Usuario General" }), "Tipo de usuario", new { @class = "browser-default" })
+                        @Html.ValidationMessageFor(m => m.Role, "", new { @class = "red-text" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field">
+                        @Html.LabelFor(m => m.Password)
+                        @Html.PasswordFor(m => m.Password, new { @class = "validate", required = "required" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "red-text" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field">
+                        @Html.LabelFor(m => m.ConfirmPassword)
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "validate", required = "required" })
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "red-text" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <button type="submit" class="btn btn-custom waves-effect waves-light">Crear Cuenta</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        M.AutoInit();
+    });
+</script>

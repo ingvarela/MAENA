@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "Appointment Calendar";
+}
+<h2>Calendario de Citas MAENA</h2>
+
+<!-- FullCalendar Styles -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Bootstrap & FullCalendar Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales-all.min.js"></script>
+
+<!-- DateTime Picker -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" />
+
+<div id="calendar"></div>
+
+<!-- Add Appointment Modal -->
+<div class="modal" id="addAppointmentModal" tabindex="-1" aria-labelledby="addAppointmentLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAppointmentLabel">Agregar Nueva Cita</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="appointmentForm">
+                    <div class="mb-3">
+                        <label for="pacienteId" class="form-label">Paciente</label>
+                        <select id="pacienteId" class="form-select" required>
+                            <option value="">Seleccione un paciente</option>
+                            <!-- Opciones dinámicas desde el backend -->
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="terapeutaId" class="form-label">Terapeuta</label>
+                        <select id="terapeutaId" class="form-select" required>
+                            <option value="">Seleccione un terapeuta</option>
+                            <option value="1">Psicologa Esmeralda</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="consultorioId" class="form-label">Consultorio</label>
+                        <select id="consultorioId" class="form-select" required>
+                            <option value="">Seleccione un consultorio</option>
+                            <option value="1">Consultorio 1</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fechaHora" class="form-label">Fecha y Hora</label>
+                        <div class="input-group date" id="datetimepicker" data-target-input="nearest">
+                            <input type="text" id="fechaHora" class="form-control datetimepicker-input" data-target="#datetimepicker" required />
+                            <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Guardar Cita</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'es',
+            selectable: true,
+            editable: true,
+            events: '/Home/GetAppointments',
+
+            dateClick: function (info) {
+                $('#fechaHora').val(info.dateStr + " 10:00");  // Set default time
+                $('#addAppointmentModal').modal('show');  // Show modal
+            },
+
+            eventDrop: function (info) {
+                $.ajax({
+                    url: '/Home/UpdateAppointment',
+                    type: 'POST',
+                    data: { id: info.event.id, fechaHora: info.event.start.toISOString() },
+                    success: function () {
+                        alert('Cita actualizada!');
+                    }
+                });
+            },
+
+            eventClick: function (info) {
+                if (confirm('¿Eliminar esta cita?')) {
+                    $.ajax({
+                        url: '/Home/DeleteAppointment',
+                        type: 'POST',
+                        data: { id: info.event.id },
+                        success: function () {
+                            alert('Cita eliminada!');
+                            calendar.refetchEvents();
+                        }
+                    });
+                }
+            }
+        });
+
+        calendar.render();
+
+
+        $.get('/Home/GetPacientesCitas', function (data) {
+            $('#pacienteId').empty().append('<option value="">Seleccione un paciente</option>');
+            $.each(data.data, function (i, paciente) { // Use `data.data` because of the JSON structure
+                $('#pacienteId').append(`<option value="${paciente.id}">${paciente.nombre}</option>`);
+            });
+        });
+
+
+        /*// DateTime Picker
+        $('#datetimepicker').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm',
+            stepping: 30
+        });*/
+
+        // Submit the form
+        $('#appointmentForm').submit(function (event) {
+            event.preventDefault();
+
+            var formData = {
+                pacienteId: $('#pacienteId').val(),
+                terapeutaId: 1,
+                consultorioId: 1,
+                fechaHora: $('#fechaHora').val()
+
+            };
+
+            $.ajax({
+                url: '/Home/AddAppointment',
+                type: 'POST',
+                data: formData,
+                success: function () {
+                    alert('Cita agregada!');
+                    $('#addAppointmentModal').modal('hide');
+                    calendar.refetchEvents();
+                },
+                error: function () {
+                    alert('Error al agregar la cita.');
+                }
+            });
+        });
+    });
+</script>

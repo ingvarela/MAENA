@@ -1,0 +1,328 @@
+﻿@{
+    ViewBag.Title = "Gestión de Pacientes";
+}
+
+<!-- Materialize CSS & DataTables -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+<link href="//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css" rel="stylesheet">
+<style>
+
+    body {
+        background: rgb(240, 240, 240);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .container {
+        width: 95%;
+        max-width: 2400px; /* Larger than DataTable */
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-custom {
+        background-color: rgb(230, 26, 135) !important;
+        color: white !important;
+    }
+
+        .btn-custom:hover {
+            background-color: rgb(249, 131, 34) !important;
+        }
+
+    .modal {
+        max-width: 600px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .input-field input {
+        text-align: left;
+    }
+
+    .table-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .dataTables_wrapper {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        display: flex;
+        justify-content: center;
+    }
+
+    #pacientesTable {
+        width: 100%;
+        max-width: 2100px;
+        text-align: center;
+    }
+
+    th, td {
+        padding: 15px !important;
+        text-align: center !important;
+        white-space: nowrap;
+    }
+
+    .action-btns {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+</style>
+
+<div class="container">
+    <h4 class="center-align">Gestión de Pacientes</h4>
+
+    <div class="table-container">
+        <h5>Lista de Pacientes</h5>
+        <button class="btn btn-custom" onclick="openModal()">Agregar Paciente</button>
+    </div>
+    <div class="row">
+        <div class="table-responsive animate-panel" style="padding:1%;">
+            <table class="striped highlight responsive-table col-lg-12" id="pacientesTable">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido Paterno</th>
+                        <th>Apellido Materno</th>
+                        <th>Fecha de Nacimiento</th>
+                        <th>Condición Médica</th>
+                        <th>Motivo Consulta</th>
+                        <th>Escuela Procedencia</th>
+                        <th>Contacto - Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+            </table>
+            </div>
+        </div>
+        </div>
+
+        <!-- Modal (Hidden by Default) -->
+        <div id="pacienteModal" class="modal">
+            <div class="modal-content">
+                <h5 id="modalTitle">Agregar Paciente</h5>
+                <input type="hidden" id="pacienteId">
+                <div class="input-field">
+                    <input type="text" id="nombre" required>
+                    <label for="nombre">Nombre</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" id="apellido_paterno" required>
+                    <label for="apellido_paterno">Apellido Paterno</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" id="apellido_materno" required>
+                    <label for="apellido_materno">Apellido Materno</label>
+                </div>
+                <div class="input-field">
+                    <input type="date" id="fecha_nacimiento" required>
+                    <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+                </div>
+
+                <div class="input-field">
+                    <input type="text" id="condicion_medica" required>
+                    <label for="condicion_medica">Condición Médica</label>
+                </div>
+
+
+                <div class="input-field">
+                    <input type="text" id="motivo_consulta" required>
+                    <label for="motivo_consulta">Motivo de Consulta</label>
+                </div>
+
+
+
+                <div class="input-field">
+                    <input type="text" id="escuela_procedencia" required>
+                    <label for="escuela_procedencia">Escuela de Procedencia</label>
+                </div>
+
+                <div class="input-field">
+                    <input type="text" id="contacto_tel" required>
+                    <label for="apellido_materno">Contacto Teléfono</label>
+                </div>
+
+
+                <button class="btn btn-custom" onclick="savePaciente()">Guardar</button>
+                <button class="btn btn-secondary" onclick="CerrarModal()">Cerrar</button>
+
+
+
+            </div>
+
+                
+
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="//cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
+
+        <script>
+            //let pacientesTable = $('#pacientesTable').DataTable();
+            var pacientesTable;
+
+            $.getScript("https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js", function () {
+                console.log("✅ DataTables manually loaded via getScript().");
+
+                // Initialize DataTable AFTER DataTables is fully loaded
+                $('#pacientesTable').DataTable({
+                    "ajax": { "url": "/Home/GetPacientes", "type": "GET", "dataSrc": "data" },
+                    "columns": [
+                        { "data": "nombre" },
+                        { "data": "apellido_paterno" },
+                        { "data": "apellido_materno" },
+                        { "data": "fecha_nacimiento" },
+                        { "data": "condicion_medica" },
+                        { "data": "motivo_consulta" },
+                        { "data": "escuela_procedencia" },
+                        { "data": "contacto_tel" },
+                        {
+                            "data": "id",
+                            "render": function (data) {
+                                return `<div class="action-btns">
+                                            <button class="btn btn-small blue lighten-2" onclick="editPaciente(${data})">✏️ Editar</button>
+                                            <button class="btn btn-small red lighten-2" onclick="deletePaciente(${data})">🗑 Eliminar</button>
+                                        </div>`;
+                            }
+                        }
+                    ],
+                    "columnDefs": [
+                        { "width": "150px", "targets": "_all" } // Ensures all columns have spacing
+                    ]
+                });
+            });
+
+            $(document).ready(function () {
+
+                // Ensure DataTables is loaded before initializing
+                if ($.fn.DataTable) {
+                    console.log("DataTables library detected.");
+
+                    // Initialize the modal but ensure it remains closed
+                    $('.modal').modal({ dismissible: false });
+                    $('#pacienteModal').modal('hide'); // Ensure it starts closed
+
+                    // Initialize DataTable on page load
+                    var pacientesTable = $('#pacientesTable').DataTable({
+                        "ajax": { "url": "/Home/GetPacientes", "type": "GET", "dataSrc": "data" },
+                        "columns": [
+                            { "data": "nombre" },
+                            { "data": "apellido_paterno" },
+                            { "data": "apellido_materno" },
+                            { "data": "fecha_nacimiento" },
+                            { "data": "condicion_medica" },
+                            { "data": "motivo_consulta" },
+                            { "data": "escuela_procedencia" },
+                            { "data": "contacto_tel" },
+                            {
+                                "data": "id",
+                                "render": function (data) {
+                                    return `<div class="action-btns">
+                                            <button class="btn btn-small blue lighten-2" onclick="editPaciente(${data})">✏️ Editar</button>
+                                            <button class="btn btn-small red lighten-2" onclick="deletePaciente(${data})">🗑 Eliminar</button>
+                                        </div>`;
+                                }
+                            }
+                        ]
+                    });
+                }
+
+                else {
+                    console.error("Error: DataTables is not loaded!");
+                }
+            });
+
+            function openModal() {
+                $('#modalTitle').text("Agregar Paciente");
+                $('#pacienteId').val("");
+                $('#nombre').val("").next().removeClass('active');
+                $('#apellido_paterno').val("").next().removeClass('active');
+                $('#apellido_materno').val("").next().removeClass('active');
+                $('#fecha_nacimiento').val("").next().removeClass('active');
+                $('#condicion_medica').val("").next().removeClass('active');
+                $('#motivo_consulta').val("").next().removeClass('active');
+                $('#escuela_procedencia').val("").next().removeClass('active');
+                $('#contacto_tel').val("").next().removeClass('active');
+                $('#pacienteModal').modal('show');
+            }
+
+            function CerrarModal() {
+                $("#pacienteModal").modal("hide");
+            }
+
+            function savePaciente() {
+                let pacienteId = $('#pacienteId').val();
+                let pacienteData = {
+                    Id: pacienteId,
+                    Nombre: $('#nombre').val(),
+                    ApellidoPaterno: $('#apellido_paterno').val(),
+                    ApellidoMaterno: $('#apellido_materno').val(),
+                    FechaNacimiento: $('#fecha_nacimiento').val(),
+                    CondicionMedica: $('#condicion_medica').val(),
+                    MotivoConsulta: $('#motivo_consulta').val(),
+                    EscuelaProcedencia: $('#escuela_procedencia').val(),
+                    ContactoTel: $('#contacto_tel').val()
+                };
+
+                let url = pacienteId ? "/Home/EditPaciente" : "/Home/AddPaciente";
+
+                $.post(url, pacienteData, function (response) {
+                    if (response.success) {
+                        pacientesTable.ajax.reload();
+                        M.toast({ html: pacienteId ? 'Paciente actualizado' : 'Paciente agregado' });
+                        $('#pacienteModal').modal('hide');
+                        location.reload()
+                    }
+                });
+            }
+
+            function editPaciente(id) {
+                $.get(`/Home/GetPacientes`, function (response) {
+                    let paciente = response.data.find(p => p.id === id);
+                    if (paciente) {
+                        $('#modalTitle').text("Editar Paciente");
+                        $('#pacienteId').val(paciente.id);
+                        $('#nombre').val(paciente.nombre).next().addClass('active');
+                        $('#apellido_paterno').val(paciente.apellido_paterno).next().addClass('active');
+                        $('#apellido_materno').val(paciente.apellido_materno).next().addClass('active');
+                        $('#fecha_nacimiento').val(paciente.fecha_nacimiento).next().addClass('active');
+                        $('#condicion_medica').val(paciente.condicion_medica).next().addClass('active');
+                        $('#motivo_consulta').val(paciente.motivo_consulta).next().addClass('active');
+                        $('#escuela_procedencia').val(paciente.escuela_procedencia).next().addClass('active');
+                        $('#contacto_tel').val(paciente.contacto_tel).next().addClass('active');
+                        $('#pacienteModal').modal('show');
+                    }
+                });
+            }
+
+            function deletePaciente(id) {
+                if (confirm("¿Estás seguro de que quieres eliminar este paciente?")) {
+                    $.post("/Home/DeletePaciente", { id: id }, function (response) {
+                        if (response.success) {
+                            pacientesTable.ajax.reload();
+                            M.toast({ html: 'Paciente eliminado' });
+                        }
+                    });
+                }
+            }
+
+
+
+
+
+        </script>
