@@ -7,8 +7,7 @@
 
     /* Solid background */
     body {
-        background: rgb(35, 163, 216);
-        background-attachment: fixed;
+        background: url('/Content/img/Maena-back.png') no-repeat center center fixed;
         background-size: cover;
         display: flex;
         justify-content: center;
@@ -20,6 +19,7 @@
 
     /* Responsive card */
     .card {
+       
         border-radius: 15px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         padding: 20px;
@@ -39,24 +39,25 @@
         border-radius: 8px;
     }
 
-        .btn-custom:hover {
+    .btn-custom:hover {
             background-color: rgb(230, 26, 135) !important;
-        }
+       }
 
     /* Input field customization */
     .input-field input {
         border-bottom: 2px solid rgb(230, 26, 135) !important;
         font-size: 16px;
+        width: 100% !important;
     }
 
-        .input-field input:focus {
+    .input-field input:focus {
             border-bottom: 2px solid rgb(230, 26, 135) !important;
         }
 
     /* Responsive container */
     .login-container {
         max-width: 450px; /* Keeps it centered on larger screens */
-        width: 80%;
+        width: 100%;
     }
 
     /* Link styling */
@@ -111,10 +112,7 @@
                                     <button type="submit" class="btn btn-custom waves-effect waves-light col s12">Ingresar</button>
                                 </div>
 
-                                <div class="row center-align">
-                                    <a href="@Url.Action("Register", "Home")" class="link-custom">Crear una Cuenta</a> |
-                                    
-                                </div>
+                           
                             }
                         </div>
                     </div>
